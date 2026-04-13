@@ -4,27 +4,23 @@ import math
 import pandas as pd
 import plotly.graph_objects as go
 
-path = "log_1776048947"
+path = "log_1775433451"
 
 def generatePlots(file: str, numEpochs=math.inf):
     data = []
     pattern = re.compile(r"Epoch (\d+): Loss -- Train: ([\d.]+) Test: ([\d.]+)    Accuracy -- Train: ([\d.]+) Test: ([\d.]+)")
     
-    try:
-        with open(file, 'r') as f:
-            for line in f:
-                match = pattern.search(line)
-                if match and int(match.group(1)) <= numEpochs:
-                    data.append({
-                        "Epoch": int(match.group(1)),
-                        "Train Loss": float(match.group(2)),
-                        "Test Loss": float(match.group(3)),
-                        "Train Accuracy": float(match.group(4)),
-                        "Test Accuracy": float(match.group(5))
-                    })
-    except FileNotFoundError:
-        print("File not found")
-        return
+    with open(file, 'r') as f:
+        for line in f:
+            match = pattern.search(line)
+            if match and int(match.group(1)) <= numEpochs:
+                data.append({
+                    "Epoch": int(match.group(1)),
+                    "Train Loss": float(match.group(2)),
+                    "Test Loss": float(match.group(3)),
+                    "Train Accuracy": float(match.group(4)),
+                    "Test Accuracy": float(match.group(5))
+                })
     
     df = pd.DataFrame(data)
     filename = os.path.basename(file)
@@ -65,4 +61,4 @@ def generatePlots(file: str, numEpochs=math.inf):
     acc_path = os.path.join(plots_path, f"{filename}_accuracy.png")
     accPlot.write_image(acc_path)
 
-generatePlots(path)
+generatePlots(path, numEpochs=10000)
