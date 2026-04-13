@@ -2,18 +2,18 @@ import os
 import re
 import math
 import pandas as pd
-import plotly.graph_objects as go
+import plotly.graph_objects as plotly
 
-path = "/Users/pjhenwood/VS Projects/CS520/Final Project/Grokking/log_1775428126"
+path = "/Users/pjhenwood/VS Projects/CS520/Final Project/Grokking/log_1775055592"
 
 def generatePlots(file: str, numEpochs=math.inf):
     data = []
-    pattern = re.compile(r"Epoch (\d+): Loss -- Train: ([\d.]+) Test: ([\d.]+)    Accuracy -- Train: ([\d.]+) Test: ([\d.]+)")
+    regex = r"Epoch (\d+): Loss -- Train: ([\d.]+) Test: ([\d.]+)    Accuracy -- Train: ([\d.]+) Test: ([\d.]+)"
     
     try:
         with open(file, 'r') as f:
             for line in f:
-                match = pattern.search(line)
+                match = re.search(regex, line)
                 if match and int(match.group(1)) <= numEpochs:
                     data.append({
                         "Epoch": int(match.group(1)),
@@ -30,9 +30,9 @@ def generatePlots(file: str, numEpochs=math.inf):
     filename = os.path.basename(file)
     
     # Plot loss
-    lossPlot = go.Figure()
-    lossPlot.add_trace(go.Scatter(x=df["Epoch"], y=df["Train Loss"], name="Train Loss", line=dict(color='#1f77b4', width=2)))
-    lossPlot.add_trace(go.Scatter(x=df["Epoch"], y=df["Test Loss"], name="Test Loss", line=dict(color='#d62728', width=2, dash='dot')))
+    lossPlot = plotly.Figure()
+    lossPlot.add_trace(plotly.Scatter(x=df["Epoch"], y=df["Train Loss"], name="Train Loss", line=dict(color="#6E5766", width=2)))
+    lossPlot.add_trace(plotly.Scatter(x=df["Epoch"], y=df["Test Loss"], name="Test Loss", line=dict(color="#FF0000", width=2, dash='dot')))
     
     lossPlot.update_layout(
         template="plotly_white",
@@ -40,14 +40,14 @@ def generatePlots(file: str, numEpochs=math.inf):
         xaxis_title="Epoch",
         yaxis_title="Loss",
         hovermode="x unified",
-        legend=dict(yanchor="top", y=0.99, xanchor="right", x=0.99)
+        legend=dict(yanchor="top", y=1.1, xanchor="right", x=0.99)
     )
     lossPlot.show()
 
     # Plot training accuraccy
-    accPlot = go.Figure()
-    accPlot.add_trace(go.Scatter(x=df["Epoch"], y=df["Train Accuracy"], name="Train Accuracy", line=dict(color='#2ca02c', width=2)))
-    accPlot.add_trace(go.Scatter(x=df["Epoch"], y=df["Test Accuracy"], name="Test Accuracy", line=dict(color='#9467bd', width=2, dash='dot')))
+    accPlot = plotly.Figure()
+    accPlot.add_trace(plotly.Scatter(x=df["Epoch"], y=df["Train Accuracy"], name="Train Accuracy", line=dict(color="#1DC750", width=2)))
+    accPlot.add_trace(plotly.Scatter(x=df["Epoch"], y=df["Test Accuracy"], name="Test Accuracy", line=dict(color="#164CC2", width=2, dash='dot')))
     
     accPlot.update_layout(
         template="plotly_white",
@@ -55,14 +55,14 @@ def generatePlots(file: str, numEpochs=math.inf):
         xaxis_title="Epoch",
         yaxis_title="Accuracy",
         hovermode="x unified",
-        legend=dict(yanchor="bottom", y=0.01, xanchor="right", x=0.99)
+        legend=dict(yanchor="bottom", y=1, xanchor="right", x=1)
     )
     accPlot.show()
 
     plots_path = os.path.join(os.path.dirname(file), "Plots")
-    loss_path = os.path.join(plots_path, f"{filename}_loss.png")
+    loss_path = os.path.join(plots_path, f"{filename}_loss.pdf")
     lossPlot.write_image(loss_path)
-    acc_path = os.path.join(plots_path, f"{filename}_accuracy.png")
+    acc_path = os.path.join(plots_path, f"{filename}_accuracy.pdf")
     accPlot.write_image(acc_path)
 
 generatePlots(path)
