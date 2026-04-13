@@ -56,9 +56,9 @@ def generatePlots(file: str, numEpochs=math.inf):
     accPlot.show()
 
     plots_path = os.path.join(os.path.dirname(file), "Plots")
-    loss_path = os.path.join(plots_path, f"{filename}_loss.png")
+    loss_path = os.path.join(plots_path, f"{filename}_loss.pdf")
     lossPlot.write_image(loss_path)
-    acc_path = os.path.join(plots_path, f"{filename}_accuracy.png")
+    acc_path = os.path.join(plots_path, f"{filename}_accuracy.pdf")
     accPlot.write_image(acc_path)
 
 generatePlots(path, numEpochs=10000)
